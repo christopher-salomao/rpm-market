@@ -21,16 +21,8 @@ export const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "detalhes/:id",
+        path: "veiculo/:id",
         element: <VehicleDetail />,
-      },
-      {
-        path: "login",
-        element: <Login />,
-      },
-      {
-        path: "cadastro",
-        element: <Register />,
       },
       {
         path: "dashboard",
@@ -45,5 +37,13 @@ export const router = createBrowserRouter([
         element: <NotFound />,
       },
     ],
+  },
+  {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "/cadastro",
+    element: <Register />,
   },
 ]);
