@@ -1,1 +1,11 @@
 @import "tailwindcss";
+
+@tailwind utilities;
+
+html, boddy, #root {
+  @apply h-full;
+}
+
+body {
+  background-color: #f1f5f9;
+}
