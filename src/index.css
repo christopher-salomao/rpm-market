@@ -2,7 +2,9 @@
 
 @tailwind utilities;
 
-html, boddy, #root {
+html,
+body,
+#root {
   @apply h-full;
 }
 
