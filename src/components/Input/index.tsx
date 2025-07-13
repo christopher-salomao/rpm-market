@@ -7,6 +7,7 @@ interface InputProps {
   type: string;
   placeholder: string;
   name: string;
+  label: string;
   register: UseFormRegister<any>;
   error?: string;
   rules?: RegisterOptions;
@@ -16,6 +17,7 @@ function Input({
   name,
   type,
   placeholder,
+  label,
   register,
   error,
   rules,
@@ -24,30 +26,36 @@ function Input({
   const isPassword = type === "password";
 
   return (
-    <div className="w-full">
-      <div className="relative w-full">
-        <input
-          className={`border ${
-            error ? "border-red-600" : "border-zinc-500"
-          } px-2 h-10 rounded-sm outline-none w-full pr-10`}
-          type={isPassword ? (showPassword ? "text" : "password") : type}
-          placeholder={placeholder}
-          {...register(name, rules)}
-          id={name}
-        />
-
-        {isPassword && (
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-xl  text-zinc-600 hover:text-black cursor-pointer"
-          >
-            {showPassword ? <FaEyeSlash /> : <FaEye />}
-          </button>
-        )}
+    <div className="relative mb-1">
+      <label
+        htmlFor={name}
+        className="absolute -top-3 left-2 bg-white px-1.5 z-10 font-medium text-sm text-zinc-800 cursor-text"
+      >
+        {label}
+      </label>
+      <div className="w-full">
+        <div className="relative w-full">
+          <input
+            className={`border ${
+              error ? "border-red-600" : "border-zinc-500"
+            } px-2 h-10 rounded-sm outline-none w-full pr-10`}
+            type={isPassword ? (showPassword ? "text" : "password") : type}
+            placeholder={placeholder}
+            {...register(name, rules)}
+            id={name}
+          />
+          {isPassword && (
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-xl  text-zinc-600 hover:text-black cursor-pointer"
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </button>
+          )}
+        </div>
+        {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
       </div>
-
-      {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
     </div>
   );
 }

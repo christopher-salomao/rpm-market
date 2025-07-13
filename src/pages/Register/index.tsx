@@ -31,53 +31,32 @@ function Register() {
         className="bg-white max-w-xl w-full py-6 px-4 rounded-lg flex flex-col gap-4"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <div className="relative mb-1">
-          <label
-            htmlFor="name"
-            className="absolute -top-3 left-2 bg-white px-1.5 z-10"
-          >
-            Nome completo
-          </label>
-          <Input
-            type="text"
-            placeholder="Digite o seu nome completo"
-            name="name"
-            error={errors.name?.message}
-            register={register}
-          />
-        </div>
+        <Input
+          type="text"
+          placeholder="Digite o seu nome completo"
+          name="name"
+          label="Nome completo"
+          error={errors.name?.message}
+          register={register}
+        />
 
-        <div className="relative mb-1">
-          <label
-            htmlFor="email"
-            className="absolute -top-3 left-2 bg-white px-1.5 z-10"
-          >
-            Email
-          </label>
-          <Input
-            type="email"
-            placeholder="Digite o seu e-mail"
-            name="email"
-            error={errors.email?.message}
-            register={register}
-          />
-        </div>
+        <Input
+          type="email"
+          placeholder="Digite o seu e-mail"
+          name="email"
+          label="E-mail"
+          error={errors.email?.message}
+          register={register}
+        />
 
-        <div className="relative">
-          <label
-            htmlFor="password"
-            className="absolute -top-3 left-2 bg-white px-1.5 z-10"
-          >
-            Senha
-          </label>
-          <Input
-            type="password"
-            placeholder="Digite uma sua senha"
-            name="password"
-            error={errors.password?.message}
-            register={register}
-          />
-        </div>
+        <Input
+          type="password"
+          placeholder="Digite uma sua senha"
+          name="password"
+          label="Senha"
+          error={errors.password?.message}
+          register={register}
+        />
 
         <button
           type="submit"

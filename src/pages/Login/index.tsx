@@ -31,37 +31,27 @@ function Login() {
         className="bg-white max-w-xl w-full py-6 px-4 rounded-lg flex flex-col gap-4"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <div className="relative mb-1">
-          <label
-            htmlFor="email"
-            className="absolute -top-3 left-2 bg-white px-1.5 z-10"
-          >
-            Email
-          </label>
+
           <Input
             type="email"
             placeholder="Digite o seu e-mail"
             name="email"
+            label="E-mail"
             error={errors.email?.message}
             register={register}
           />
-        </div>
 
-        <div className="relative">
-          <label
-            htmlFor="password"
-            className="absolute -top-3 left-2 bg-white px-1.5 z-10"
-          >
-            Senha
-          </label>
+
+
           <Input
             type="password"
             placeholder="Digite a sua senha"
             name="password"
+            label="Senha"
             error={errors.password?.message}
             register={register}
           />
-        </div>
+
 
         <button
           type="submit"
