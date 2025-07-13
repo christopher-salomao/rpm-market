@@ -1,10 +1,97 @@
 import { Link } from "react-router-dom";
+import Input from "../../components/Input";
+
 import logo from "../../assets/logo.png";
 
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginSchema, type FormData } from "./schema";
+
 function Register() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: zodResolver(loginSchema),
+    mode: "onChange",
+  });
+
+  function onSubmit(data: FormData) {
+    console.log(data);
+  }
+
   return (
-    <section>
-      <h1>Cadastro</h1>
+    <section className="w-full h-screen flex flex-col items-center justify-center px-3 gap-4">
+      <Link to={"/"} className="w-full max-w-40 mb-6">
+        <img src={logo} alt="Logo do site" className="w-full object-contain" />
+      </Link>
+
+      <form
+        className="bg-white max-w-xl w-full py-6 px-4 rounded-lg flex flex-col gap-4"
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <div className="relative mb-1">
+          <label
+            htmlFor="name"
+            className="absolute -top-3 left-2 bg-white px-1.5 z-10"
+          >
+            Nome completo
+          </label>
+          <Input
+            type="text"
+            placeholder="Digite o seu nome completo"
+            name="name"
+            error={errors.name?.message}
+            register={register}
+          />
+        </div>
+
+        <div className="relative mb-1">
+          <label
+            htmlFor="email"
+            className="absolute -top-3 left-2 bg-white px-1.5 z-10"
+          >
+            Email
+          </label>
+          <Input
+            type="email"
+            placeholder="Digite o seu e-mail"
+            name="email"
+            error={errors.email?.message}
+            register={register}
+          />
+        </div>
+
+        <div className="relative">
+          <label
+            htmlFor="password"
+            className="absolute -top-3 left-2 bg-white px-1.5 z-10"
+          >
+            Senha
+          </label>
+          <Input
+            type="password"
+            placeholder="Digite uma sua senha"
+            name="password"
+            error={errors.password?.message}
+            register={register}
+          />
+        </div>
+
+        <button
+          type="submit"
+          className="bg-red-600 px-3 h-10 rounded-sm cursor-pointer hover:bg-red-700 transition-colors border-2 border-zinc-900 duration-300 text-white font-medium text-lg"
+        >
+          Cadastrar
+        </button>
+      </form>
+      <Link
+        to={"/login"}
+        className="text-zinc-600 hover:text-zinc-800 transition-colors duration-300"
+      >
+        Já possui uma conta? <strong>Faça login</strong>
+      </Link>
     </section>
   );
 }

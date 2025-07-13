@@ -28,32 +28,54 @@ function Login() {
       </Link>
 
       <form
-        className="bg-white max-w-xl w-full p-4 rounded-lg flex flex-col gap-4"
+        className="bg-white max-w-xl w-full py-6 px-4 rounded-lg flex flex-col gap-4"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <Input
-          type="email"
-          placeholder="Digite seu e-mail"
-          name="email"
-          error={errors.email?.message}
-          register={register}
-        />
+        <div className="relative mb-1">
+          <label
+            htmlFor="email"
+            className="absolute -top-3 left-2 bg-white px-1.5 z-10"
+          >
+            Email
+          </label>
+          <Input
+            type="email"
+            placeholder="Digite o seu e-mail"
+            name="email"
+            error={errors.email?.message}
+            register={register}
+          />
+        </div>
 
-        <Input
-          type= "password"
-          placeholder="Digite sua senha"
-          name="password"
-          error={errors.password?.message}
-          register={register}
-        />
+        <div className="relative">
+          <label
+            htmlFor="password"
+            className="absolute -top-3 left-2 bg-white px-1.5 z-10"
+          >
+            Senha
+          </label>
+          <Input
+            type="password"
+            placeholder="Digite a sua senha"
+            name="password"
+            error={errors.password?.message}
+            register={register}
+          />
+        </div>
 
         <button
           type="submit"
-          className="bg-red-600 px-3 h-9 rounded-sm cursor-pointer hover:bg-red-700 transition-colors duration-300 text-white font-medium text-lg"
+          className="bg-red-600 px-3 h-10 rounded-sm cursor-pointer hover:bg-red-700 transition-colors duration-300 border-2 border-zinc-900 text-white font-medium text-lg"
         >
           Entrar
         </button>
       </form>
+      <Link
+        to={"/cadastro"}
+        className="text-zinc-600 hover:text-zinc-800 transition-colors duration-300"
+      >
+        Novo por aqui? <strong>Cadastre-se</strong>
+      </Link>
     </section>
   );
 }

@@ -29,7 +29,7 @@ function Input({
         <input
           className={`border ${
             error ? "border-red-600" : "border-zinc-500"
-          } px-2 h-9 rounded-sm outline-none w-full pr-10`}
+          } px-2 h-10 rounded-sm outline-none w-full pr-10`}
           type={isPassword ? (showPassword ? "text" : "password") : type}
           placeholder={placeholder}
           {...register(name, rules)}
@@ -40,7 +40,7 @@ function Input({
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-xl  text-zinc-600 hover:text-black cursor-pointer"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-xl  text-zinc-600 hover:text-black cursor-pointer"
           >
             {showPassword ? <FaEyeSlash /> : <FaEye />}
           </button>
