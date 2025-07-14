@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Input from "../../components/Input";
 
@@ -9,7 +10,9 @@ import { loginSchema, type FormData } from "./schema";
 
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../../services/firebaseConnection";
+
 import toast from "react-hot-toast";
+import { toastStyle } from "../../styles/toastStyle";
 
 function Register() {
   const {
@@ -23,6 +26,12 @@ function Register() {
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (auth.currentUser) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [navigate]);
+
   async function onSubmit(data: FormData) {
     createUserWithEmailAndPassword(auth, data.email, data.password)
       .then(async (user) => {
@@ -30,24 +39,16 @@ function Register() {
           displayName: data.name,
         });
         toast.success("Cadastro realizado com sucesso!", {
-          style: {
-            background: "#101010",
-            color: "#fff",
-            borderRadius: "4px",
-          }
+          style: toastStyle,
         });
-        navigate("/dashboard");
+        navigate("/dashboard", { replace: true });
       })
       .catch((error) => {
         toast.error("Ops, algo deu errado!", {
-          style: {
-            background: "#101010",
-            color: "#fff",
-            borderRadius: "4px",
-          }
-        })
-      console.log(error);
-    });
+          style: toastStyle,
+        });
+        console.log(error);
+      });
   }
 
   return (
