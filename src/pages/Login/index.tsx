@@ -31,27 +31,23 @@ function Login() {
         className="bg-white max-w-xl w-full py-6 px-4 rounded-lg flex flex-col gap-4"
         onSubmit={handleSubmit(onSubmit)}
       >
+        <Input
+          type="email"
+          placeholder="Digite o seu e-mail"
+          name="email"
+          label="E-mail"
+          error={errors.email?.message}
+          register={register}
+        />
 
-          <Input
-            type="email"
-            placeholder="Digite o seu e-mail"
-            name="email"
-            label="E-mail"
-            error={errors.email?.message}
-            register={register}
-          />
-
-
-
-          <Input
-            type="password"
-            placeholder="Digite a sua senha"
-            name="password"
-            label="Senha"
-            error={errors.password?.message}
-            register={register}
-          />
-
+        <Input
+          type="password"
+          placeholder="Digite a sua senha"
+          name="password"
+          label="Senha"
+          error={errors.password?.message}
+          register={register}
+        />
 
         <button
           type="submit"
