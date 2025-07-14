@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, type FormData } from "./schema";
 
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { auth } from "../../services/firebaseConnection";
 
 import toast from "react-hot-toast";
@@ -27,10 +27,8 @@ function Login() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (auth.currentUser) {
-      navigate("/dashboard", { replace: true });
-    }
-  }, [navigate]);
+    signOut(auth);
+  }, []);
 
   async function onSubmit(data: FormData) {
     await signInWithEmailAndPassword(auth, data.email, data.password)

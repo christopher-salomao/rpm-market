@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, type FormData } from "./schema";
 
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { createUserWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
 import { auth } from "../../services/firebaseConnection";
 
 import toast from "react-hot-toast";
@@ -27,9 +27,7 @@ function Register() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (auth.currentUser) {
-      navigate("/dashboard", { replace: true });
-    }
+    signOut(auth);
   }, [navigate]);
 
   async function onSubmit(data: FormData) {
