@@ -15,7 +15,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loadingAuth, setLoadingAuth] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsub = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser({
           uid: user.uid,
@@ -29,12 +29,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     });
 
-    return () => unsubscribe();
-  }, [])
+    return () => unsub();
+  }, []);
 
   return (
     <AuthContext.Provider value={{ signed: !!user, loadingAuth }}>
       {children}
     </AuthContext.Provider>
-  )
+  );
 }

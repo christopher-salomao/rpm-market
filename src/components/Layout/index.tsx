@@ -5,7 +5,9 @@ export function Layout() {
   return (
     <>
       <Header />
-      <Outlet />
+      <main className="grow">
+        <Outlet />
+      </main>
     </>
   );
 }

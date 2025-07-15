@@ -11,6 +11,9 @@ import NewVehicle from "./pages/Dashboard/NewVehicle";
 
 import { NotFound } from "./pages/NotFound";
 
+import { Private } from "./routes/Private";
+import { Guest } from "./routes/Guest";
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -26,11 +29,19 @@ export const router = createBrowserRouter([
       },
       {
         path: "dashboard",
-        element: <Dashboard />,
+        element: (
+          <Private>
+            <Dashboard />
+          </Private>
+        ),
       },
       {
         path: "dashboard/novo-veiculo",
-        element: <NewVehicle />,
+        element: (
+          <Private>
+            <NewVehicle />
+          </Private>
+        ),
       },
       {
         path: "*",
@@ -40,10 +51,18 @@ export const router = createBrowserRouter([
   },
   {
     path: "/login",
-    element: <Login />,
+    element: (
+      <Guest>
+        <Login />
+      </Guest>
+    ),
   },
   {
     path: "/cadastro",
-    element: <Register />,
+    element: (
+      <Guest>
+        <Register />
+      </Guest>
+    ),
   },
 ]);
