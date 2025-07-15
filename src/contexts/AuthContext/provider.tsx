@@ -4,7 +4,7 @@ import { AuthContext } from "./context";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../services/firebaseConnection";
 
-interface UserProps {
+export interface UserProps {
   uid: string;
   email: string | null;
   name: string | null;
@@ -33,7 +33,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ signed: !!user, loadingAuth }}>
+    <AuthContext.Provider value={{ signed: !!user, loadingAuth, user }}>
       {children}
     </AuthContext.Provider>
   );

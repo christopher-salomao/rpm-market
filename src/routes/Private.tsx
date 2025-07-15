@@ -12,7 +12,7 @@ export function Private({ children }: { children: ReactNode }) {
   }
 
   if (!signed) {
-    return <Navigate to="/" />;
+    return <Navigate to="/login" />;
   }
 
   return children;

@@ -11,7 +11,7 @@ export function Guest({ children }: { children: ReactNode }) {
   }
 
   if (signed) {
-    return <Navigate to="/" />;
+    return <Navigate to="/dashboard" />;
   }
 
   return children;
