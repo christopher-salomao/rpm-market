@@ -32,8 +32,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => unsub();
   }, []);
 
+  function handleInfoUser({ uid, email, name }: UserProps) {
+    setUser({ uid, email, name });
+  }
+
   return (
-    <AuthContext.Provider value={{ signed: !!user, loadingAuth, user }}>
+    <AuthContext.Provider value={{ signed: !!user, loadingAuth, user, handleInfoUser }}>
       {children}
     </AuthContext.Provider>
   );

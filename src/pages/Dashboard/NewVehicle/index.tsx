@@ -1,8 +1,12 @@
+import { Container } from "../../../components/Container";
+import { DashboardHeader } from "../../../components/PanelHeader";
+
 function NewVehicle() {
   return (
-    <section>
+    <Container>
+      <DashboardHeader />
       <h1>Novo veículo</h1>
-    </section>
+    </Container>
   );
 }
 

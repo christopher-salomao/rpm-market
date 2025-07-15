@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
+import { AuthContext } from "../../contexts/AuthContext/context";
 import { Link, useNavigate } from "react-router-dom";
 import Input from "../../components/Input";
 
@@ -15,6 +16,7 @@ import toast from "react-hot-toast";
 import { toastStyle } from "../../styles/toastStyle";
 
 function Register() {
+  const { handleInfoUser } = useContext(AuthContext);
   const {
     register,
     handleSubmit,
@@ -36,9 +38,17 @@ function Register() {
         await updateProfile(user.user, {
           displayName: data.name,
         });
+
+        handleInfoUser({
+          uid: user.user.uid,
+          email: data.email,
+          name: data.name,
+        });
+
         toast.success("Cadastro realizado com sucesso!", {
           style: toastStyle,
         });
+
         navigate("/dashboard", { replace: true });
       })
       .catch((error) => {
@@ -88,7 +98,7 @@ function Register() {
 
         <button
           type="submit"
-          className="bg-red-600 px-3 h-10 rounded-sm cursor-pointer hover:bg-red-700 transition-colors border-2 border-zinc-900 duration-300 text-white font-medium text-lg"
+          className="bg-red-600 px-3 h-10 rounded-sm hover:bg-red-700 transition-colors border-2 border-zinc-900 duration-300 text-white font-medium text-lg"
         >
           Cadastrar
         </button>
