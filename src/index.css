@@ -1,1 +1,28 @@
 @import "tailwindcss";
+
+@tailwind utilities;
+
+html,
+body,
+#root {
+  @apply h-full;
+}
+
+body {
+  background-color: #f1f5f9;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+}
+
+button {
+  cursor: pointer;
+}
+
+input:-webkit-autofill {
+  box-shadow: 0 0 0px 1000px #ffffff inset !important;
+  -webkit-text-fill-color: #000000 !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
