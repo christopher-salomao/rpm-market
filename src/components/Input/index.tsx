@@ -29,7 +29,7 @@ function Input({
     <div className="relative mb-1">
       <label
         htmlFor={name}
-        className="absolute -top-3 left-2 bg-white px-1.5 z-10 font-medium text-sm text-zinc-800 cursor-text"
+        className="absolute -top-3.5 left-2 bg-white px-1.5 z-10 font-bold text-md text-zinc-800 cursor-text"
       >
         {label}
       </label>
