@@ -95,7 +95,6 @@ function NewVehicle() {
               register={register}
               error={errors.whatsapp?.message}
               placeholder="Ex: 11912345678"
-
             />
 
             <Input
