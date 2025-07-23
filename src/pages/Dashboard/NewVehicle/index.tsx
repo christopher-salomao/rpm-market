@@ -1,13 +1,39 @@
+import { type ChangeEvent, useState, useContext } from "react";
+import { AuthContext } from "../../../contexts/AuthContext/context";
+
 import { Container } from "../../../components/Container";
 import { DashboardHeader } from "../../../components/PanelHeader";
 import Input from "../../../components/Input";
-import { FiUpload } from "react-icons/fi";
+import { FiUpload, FiTrash2 } from "react-icons/fi";
 
 import { newVehicleSchema, type FormData } from "./schema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import toast from "react-hot-toast";
+import { toastStyle } from "../../../styles/toastStyle";
+
+import { v7 as uuidV7 } from "uuid";
+import { storage } from "@/services/firebaseConnection";
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
+
+interface ImageItemProps {
+  uid: string; // dono da imagem
+  name: string; // id da imagem
+  previewURL: string;
+  url: string;
+}
+
 function NewVehicle() {
+  const { user } = useContext(AuthContext);
+
+  const [vehicleImages, setVehicleImages] = useState<ImageItemProps[]>([]);
+
   const {
     register,
     handleSubmit,
@@ -17,6 +43,76 @@ function NewVehicle() {
     resolver: zodResolver(newVehicleSchema),
     mode: "onChange",
   });
+
+  async function handleAddFile(e: ChangeEvent<HTMLInputElement>) {
+    if (e.target.files && e.target.files[0]) {
+      const image = e.target.files[0];
+
+      if (image.type === "image/jpeg" || image.type === "image/png") {
+        // envia para o storage
+        await handleUploadImage(image);
+      } else {
+        toast.error("Envie uma imagem do tipo PNG ou JPEG", {
+          style: toastStyle,
+        });
+        return;
+      }
+    }
+  }
+
+  async function handleUploadImage(image: File) {
+    if (!user?.uid) {
+      return;
+    }
+
+    const currentUID = user?.uid;
+    const uidImage = uuidV7();
+
+    const uploadsRef = ref(storage, `images/${currentUID}/${uidImage}`);
+
+    uploadBytes(uploadsRef, image)
+      .then((snapshot) => {
+        getDownloadURL(snapshot.ref)
+          .then((dowloadURL) => {
+            const imageItem = {
+              name: uidImage,
+              uid: currentUID,
+              previewURL: URL.createObjectURL(image),
+              url: dowloadURL,
+            };
+            setVehicleImages((images) => [...images, imageItem]);
+            toast.success("Imagem adicionada com sucesso!", {
+              style: toastStyle,
+            });
+          })
+          .catch(() => {
+            toast.error("Ops, algo deu errado!", {
+              style: toastStyle,
+            });
+          });
+      })
+      .catch(() => {
+        toast.error("Ops, algo deu errado!", {
+          style: toastStyle,
+        });
+      });
+  }
+
+  async function handleDeleteImage(item: ImageItemProps) {
+    const imagePath = `images/${item.uid}/${item.name}`; // caminho da imagem no storage
+
+    const imageRef = ref(storage, imagePath);
+
+    await deleteObject(imageRef)
+      .then(() => {
+        setVehicleImages(vehicleImages.filter((vehicle) => vehicle.url !== item.url));
+      })
+      .catch(() => {
+        toast.error("Ops, algo deu errado!", {
+          style: toastStyle,
+        });
+      });
+  }
 
   function onSubmit(data: FormData) {
     console.log(data);
@@ -30,7 +126,7 @@ function NewVehicle() {
         <button className="border-2 border-gray-600 w-40 md:w-48 rounded-lg h-32">
           <label
             htmlFor="newImageInput"
-            className="cursor-pointer w-full h-full flex items-center justify-center"
+            className="cursor-pointer w-40 md:w-48 h-full flex items-center justify-center"
           >
             <FiUpload size={30} color="#000000" />
           </label>
@@ -40,9 +136,26 @@ function NewVehicle() {
               name="newImageInput"
               id="newImageInput"
               accept="image/*"
+              onChange={handleAddFile}
             />
           </div>
         </button>
+
+        {vehicleImages.map((item) => (
+          <div
+            key={item.name}
+            className="w-full h-32 flex items-center justify-center relative"
+          >
+            <img
+              src={item.previewURL}
+              alt="Foto do veículo"
+              className="rounded-lg w-full h-32 object-cover"
+            />
+            <button className="absolute  text-white hover:text-red-600 transition-colors duration-300" onClick={() => handleDeleteImage(item)}>
+              <FiTrash2 size={26} />
+            </button>
+          </div>
+        ))}
       </div>
 
       <div className="w-full bg-white rounded-lg p-3 flex flex-col sm:flex-row items-center gap-2 mt-2 ">
@@ -132,7 +245,11 @@ function NewVehicle() {
               name="description"
               placeholder="Digite a descrição do completo do veículo aqui..."
             />
-            {errors.description && <p className="text-red-600 text-sm mt-1">{errors.description?.message}</p>}
+            {errors.description && (
+              <p className="text-red-600 text-sm mt-1">
+                {errors.description?.message}
+              </p>
+            )}
           </div>
 
           <button
