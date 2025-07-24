@@ -14,13 +14,14 @@ import toast from "react-hot-toast";
 import { toastStyle } from "../../../styles/toastStyle";
 
 import { v7 as uuidV7 } from "uuid";
-import { storage } from "@/services/firebaseConnection";
+import { storage, db } from "@/services/firebaseConnection";
 import {
   ref,
   uploadBytes,
   getDownloadURL,
   deleteObject,
 } from "firebase/storage";
+import { addDoc, collection } from "firebase/firestore";
 
 interface ImageItemProps {
   uid: string; // dono da imagem
@@ -38,7 +39,7 @@ function NewVehicle() {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
+    reset, // limpa os inputs do formulário
   } = useForm<FormData>({
     resolver: zodResolver(newVehicleSchema),
     mode: "onChange",
@@ -105,7 +106,9 @@ function NewVehicle() {
 
     await deleteObject(imageRef)
       .then(() => {
-        setVehicleImages(vehicleImages.filter((vehicle) => vehicle.url !== item.url));
+        setVehicleImages(
+          vehicleImages.filter((vehicle) => vehicle.url !== item.url)
+        );
       })
       .catch(() => {
         toast.error("Ops, algo deu errado!", {
@@ -114,8 +117,48 @@ function NewVehicle() {
       });
   }
 
-  function onSubmit(data: FormData) {
-    console.log(data);
+  async function onSubmit(data: FormData) {
+    if (vehicleImages.length === 0) {
+      toast.error("Emvie alguma imagem do veículo!", {
+        style: toastStyle,
+      });
+      return;
+    }
+
+    const vehicleImagesList = vehicleImages.map((vehicle) => {
+      return {
+        uid: vehicle.uid,
+        name: vehicle.name,
+        url: vehicle.url,
+      };
+    });
+
+    await addDoc(collection(db, "vehicles"), {
+      brand: data.brand,
+      model: data.model,
+      year: data.year,
+      km: data.km,
+      whatsapp: data.whatsapp,
+      city: data.city,
+      price: data.price,
+      description: data.description,
+      creationDate: new Date(),
+      owner: user?.name,
+      uid: user?.uid,
+      images: vehicleImagesList,
+    })
+      .then(() => {
+        toast.success("Veículo cadastrado com sucesso!", {
+          style: toastStyle,
+        });
+        reset();
+        setVehicleImages([]);
+      })
+      .catch(() => {
+        toast.error("Ops, algo deu errado!", {
+          style: toastStyle,
+        });
+      });
   }
 
   return (
@@ -151,7 +194,10 @@ function NewVehicle() {
               alt="Foto do veículo"
               className="rounded-lg w-full h-32 object-cover"
             />
-            <button className="absolute  text-white hover:text-red-600 transition-colors duration-300" onClick={() => handleDeleteImage(item)}>
+            <button
+              className="absolute  text-white hover:text-red-600 transition-colors duration-300"
+              onClick={() => handleDeleteImage(item)}
+            >
               <FiTrash2 size={26} />
             </button>
           </div>
@@ -165,11 +211,11 @@ function NewVehicle() {
         >
           <Input
             type="text"
-            name="name"
+            name="brand"
             label="Marca do veículo"
             register={register}
-            error={errors.name?.message}
-            placeholder="Ex: Honda Civic"
+            error={errors.brand?.message}
+            placeholder="Ex: Honda"
           />
           <Input
             type="text"
