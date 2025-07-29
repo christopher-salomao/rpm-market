@@ -19,16 +19,14 @@ import {
   ref,
   uploadBytes,
   getDownloadURL,
-  deleteObject,
 } from "firebase/storage";
 import { addDoc, collection } from "firebase/firestore";
 
 interface ImageItemProps {
-  uid: string; // dono da imagem
-  name: string; // id da imagem
+  file: File;
   previewURL: string;
-  url: string;
 }
+
 
 function NewVehicle() {
   const { user } = useContext(AuthContext);
@@ -50,115 +48,78 @@ function NewVehicle() {
       const image = e.target.files[0];
 
       if (image.type === "image/jpeg" || image.type === "image/png") {
-        // envia para o storage
-        await handleUploadImage(image);
+        const previewURL = URL.createObjectURL(image);
+        setVehicleImages((images) => [...images, { file: image, previewURL }]);
       } else {
         toast.error("Envie uma imagem do tipo PNG ou JPEG", {
           style: toastStyle,
         });
-        return;
       }
     }
   }
 
-  async function handleUploadImage(image: File) {
-    if (!user?.uid) {
-      return;
-    }
-
-    const currentUID = user?.uid;
-    const uidImage = uuidV7();
-
-    const uploadsRef = ref(storage, `images/${currentUID}/${uidImage}`);
-
-    uploadBytes(uploadsRef, image)
-      .then((snapshot) => {
-        getDownloadURL(snapshot.ref)
-          .then((dowloadURL) => {
-            const imageItem = {
-              name: uidImage,
-              uid: currentUID,
-              previewURL: URL.createObjectURL(image),
-              url: dowloadURL,
-            };
-            setVehicleImages((images) => [...images, imageItem]);
-            toast.success("Imagem adicionada com sucesso!", {
-              style: toastStyle,
-            });
-          })
-          .catch(() => {
-            toast.error("Ops, algo deu errado!", {
-              style: toastStyle,
-            });
-          });
-      })
-      .catch(() => {
-        toast.error("Ops, algo deu errado!", {
-          style: toastStyle,
-        });
-      });
-  }
-
-  async function handleDeleteImage(item: ImageItemProps) {
-    const imagePath = `images/${item.uid}/${item.name}`; // caminho da imagem no storage
-
-    const imageRef = ref(storage, imagePath);
-
-    await deleteObject(imageRef)
-      .then(() => {
-        setVehicleImages(
-          vehicleImages.filter((vehicle) => vehicle.url !== item.url)
-        );
-      })
-      .catch(() => {
-        toast.error("Ops, algo deu errado!", {
-          style: toastStyle,
-        });
-      });
+  function handleDeleteImage(item: ImageItemProps) {
+    setVehicleImages((images) =>
+      images.filter((image) => image.previewURL !== item.previewURL)
+    );
   }
 
   async function onSubmit(data: FormData) {
     if (vehicleImages.length === 0) {
-      toast.error("Emvie alguma imagem do veículo!", {
+      toast.error("Envie alguma imagem do veículo!", {
         style: toastStyle,
       });
       return;
     }
 
-    const vehicleImagesList = vehicleImages.map((vehicle) => {
-      return {
-        uid: vehicle.uid,
-        name: vehicle.name,
-        url: vehicle.url,
-      };
-    });
+    if (!user?.uid) return;
 
-    await addDoc(collection(db, "vehicles"), {
-      brand: data.brand,
-      model: data.model,
-      year: data.year,
-      km: data.km,
-      whatsapp: data.whatsapp,
-      city: data.city,
-      price: data.price,
-      description: data.description,
-      creationDate: new Date(),
-      owner: user?.name,
-      uid: user?.uid,
-      images: vehicleImagesList,
-    })
-      .then(() => {
-        toast.success("Veículo cadastrado com sucesso!", {
-          style: toastStyle,
+    const currentUID = user.uid;
+
+    await toast.promise(
+      (async () => {
+        const uploadedImages = await Promise.all(
+          vehicleImages.map(async ({ file }) => {
+            const uidImage = uuidV7();
+            const uploadsRef = ref(storage, `images/${currentUID}/${uidImage}`);
+            await uploadBytes(uploadsRef, file);
+            const url = await getDownloadURL(uploadsRef);
+
+            return {
+              uid: currentUID,
+              name: uidImage,
+              url,
+            };
+          })
+        );
+
+        await addDoc(collection(db, "vehicles"), {
+          brand: data.name,
+          model: data.model,
+          year: data.year,
+          km: data.km,
+          whatsapp: data.whatsapp,
+          city: data.city,
+          price: data.price,
+          description: data.description,
+          creationDate: new Date(),
+          owner: user?.name,
+          uid: user?.uid,
+          images: uploadedImages,
         });
+
         reset();
         setVehicleImages([]);
-      })
-      .catch(() => {
-        toast.error("Ops, algo deu errado!", {
-          style: toastStyle,
-        });
-      });
+      })(),
+      {
+        loading: "Enviando imagens e salvando veículo...",
+        success: "Veículo cadastrado com sucesso!",
+        error: "Erro ao cadastrar o veículo!",
+      },
+      {
+        style: toastStyle,
+      }
+    );
   }
 
   return (
@@ -186,7 +147,7 @@ function NewVehicle() {
 
         {vehicleImages.map((item) => (
           <div
-            key={item.name}
+            key={item.previewURL}
             className="w-full h-32 flex items-center justify-center relative"
           >
             <img
@@ -211,11 +172,11 @@ function NewVehicle() {
         >
           <Input
             type="text"
-            name="brand"
-            label="Marca do veículo"
+            name="name"
+            label="Modelo do veículo"
             register={register}
-            error={errors.brand?.message}
-            placeholder="Ex: Honda"
+            error={errors.name?.message}
+            placeholder="Ex: Honda Civic"
           />
           <Input
             type="text"

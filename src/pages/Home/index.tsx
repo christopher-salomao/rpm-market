@@ -1,10 +1,37 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { Container } from "../../components/Container";
 import { FaSearch } from "react-icons/fa";
 
+import { db } from "@/services/firebaseConnection";
+import { collection, query, getDocs } from "firebase/firestore";
+
+interface VehicleProps {
+  id: string;
+  name: string;
+  model: string;
+  year: string;
+  km: string;
+  whatsapp: string;
+  city: string;
+  price: string | number;
+  description: string;
+  creationDate: string;
+  owner: string;
+  uid: string;
+  images: VehicleImageProps[];
+}
+
+interface VehicleImageProps {
+  uid: string;
+  name: string;
+  url: string;
+}
+
 function Home() {
-  const [searchInput, setSearchInput] = useState("");
+  const [vehicles, setVehicles] = useState<VehicleProps[]>([]);
+
+  useEffect(() => { }, []);
 
   return (
     <Container>
@@ -12,8 +39,6 @@ function Home() {
         <input
           type="text"
           placeholder="Digite o modelo do veículo..."
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
           className="grow border border-zinc-500 px-2 h-9 rounded-sm outline-none"
         />
         <button
@@ -46,8 +71,6 @@ function Home() {
             <span className="text-zinc-700">Belo Horizonte - MG</span>
           </div>
         </section>
-
-
       </main>
     </Container>
   );
