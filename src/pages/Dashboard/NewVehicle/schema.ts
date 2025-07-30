@@ -1,8 +1,8 @@
 import { z } from "zod";
 
 export const newVehicleSchema = z.object({
-  name: z.string().nonempty("A marca é obrigatória"),
-  model: z.string().nonempty("O modelo é obrigatório"),
+  name: z.string().nonempty("A marca é obrigatória").toUpperCase(),
+  model: z.string().nonempty("O modelo é obrigatório").toUpperCase(),
   year: z.string().nonempty("O ano do veículo é obrigatório"),
   km: z.string().nonempty("O quilometragem é obrigatória"),
   price: z.string().nonempty("O preco é obrigatório"),

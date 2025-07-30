@@ -94,7 +94,7 @@ function NewVehicle() {
         );
 
         await addDoc(collection(db, "vehicles"), {
-          brand: data.name,
+          name: data.name,
           model: data.model,
           year: data.year,
           km: data.km,
