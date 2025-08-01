@@ -6,7 +6,7 @@ export const newVehicleSchema = z.object({
   year: z.string().nonempty("O ano do veículo é obrigatório"),
   km: z.string().nonempty("O quilometragem é obrigatória"),
   price: z.string().nonempty("O preco é obrigatório"),
-  city: z.string().nonempty("A cidade é obrigatória"),
+  city: z.string().nonempty("A cidade é obrigatória").toUpperCase(),
   whatsapp: z
     .string()
     .min(1, "O telefone é obrigatório")

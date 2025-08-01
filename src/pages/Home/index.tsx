@@ -3,12 +3,11 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Container } from "../../components/Container";
 import { FaSearch } from "react-icons/fa";
+import { Spinner } from "@/components/Spinner";
 
 import { db } from "@/services/firebaseConnection";
 import { collection, query, getDocs, orderBy } from "firebase/firestore";
-import { Spinner } from "@/components/Spinner";
-
-interface VehicleProps {
+export interface VehicleProps {
   id: string;
   name: string;
   model: string;
@@ -125,7 +124,7 @@ function Home() {
               </div>
               <div className="mt-2">
                 <span className="text-zinc-700">
-                  {vehicle.city.toLocaleUpperCase()}
+                  {vehicle.city}
                 </span>
               </div>
             </section>

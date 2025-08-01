@@ -1,12 +1,20 @@
 import { Link } from "react-router-dom";
 
-import { auth } from "../../services/firebaseConnection"
+import { auth } from "../../services/firebaseConnection";
 import { signOut, deleteUser, type User } from "firebase/auth";
 
-import { Dialog, DialogContent, DialogDescription, DialogTrigger, DialogClose, DialogTitle, DialogFooter, DialogHeader } from "../ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTrigger,
+  DialogClose,
+  DialogTitle,
+  DialogFooter,
+  DialogHeader,
+} from "../ui/dialog";
 
 export function DashboardHeader() {
-
   return (
     <div className="flex items-center justify-between bg-zinc-900 w-full text-white py-3 px-4 rounded-lg mb-4">
       <div>
