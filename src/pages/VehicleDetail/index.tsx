@@ -6,7 +6,7 @@ import { db } from "@/services/firebaseConnection";
 
 import { Spinner } from "@/components/Spinner";
 import { FaWhatsapp } from "react-icons/fa";
-import { Swiper, SwiperSlide } from "swiper/react"
+import { Swiper, SwiperSlide } from "swiper/react";
 
 import type { VehicleProps } from "@/interfaces/VehicleProps";
 
@@ -22,6 +22,7 @@ function VehicleDetail() {
 
       const docRef = doc(db, "vehicles", id!);
       getDoc(docRef).then((snapshot) => {
+        if (!snapshot.exists()) navigate("/", { replace: true });
         setVehicle({
           id: snapshot.id,
           name: snapshot.data()?.name,
@@ -54,27 +55,29 @@ function VehicleDetail() {
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4">
-      <Swiper
-        slidesPerView={1}
-        breakpoints={{
-          768: {
-            slidesPerView: 2,
-          },
-        }}
-        pagination={{ clickable: true }}
-        navigation
-        className="rounded-lg"
-      >
-        {vehicle?.images.map((image) => (
-          <SwiperSlide key={image.name}>
-            <img
-              className="w-full h-96 object-cover select-none"
-              src={image.url}
-              alt={vehicle?.name}
-            />
-          </SwiperSlide>
-        ))}
-      </Swiper>
+      {vehicle && (
+        <Swiper
+          slidesPerView={1}
+          breakpoints={{
+            768: {
+              slidesPerView: 2,
+            },
+          }}
+          pagination={{ clickable: true }}
+          navigation
+          className="rounded-lg"
+        >
+          {vehicle?.images.map((image) => (
+            <SwiperSlide key={image.name}>
+              <img
+                className="w-full h-96 object-cover select-none"
+                src={image.url}
+                alt={vehicle?.name}
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      )}
 
       {vehicle && (
         <main className="w-full bg-white rounded p-6 my-4">
@@ -115,7 +118,9 @@ function VehicleDetail() {
           <p>{vehicle?.whatsapp}</p>
 
           <a
-            href=""
+            href={`https://api.whatsapp.com/send?phone=${vehicle?.whatsapp}&text=Olá, vi seu anúncio do ${vehicle?.name} no site RPM Market e fiquei interessado!`}
+            target="_blank"
+            rel="noreferrer noopener"
             className="w-full flex items-center justify-center px-4 py-2 text-white text-xl font-medium border gap-2 mt-4 bg-green-600 rounded-lg drop-shadow"
           >
             Conversar com o vendedor
