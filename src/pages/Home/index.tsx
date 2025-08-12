@@ -7,27 +7,9 @@ import { Spinner } from "@/components/Spinner";
 
 import { db } from "@/services/firebaseConnection";
 import { collection, query, getDocs, orderBy } from "firebase/firestore";
-export interface VehicleProps {
-  id: string;
-  name: string;
-  model: string;
-  year: string;
-  km: string;
-  whatsapp: string;
-  city: string;
-  price: string | number;
-  description: string;
-  creationDate: string;
-  owner: string;
-  uid: string;
-  images: VehicleImageProps[];
-}
 
-interface VehicleImageProps {
-  uid: string;
-  name: string;
-  url: string;
-}
+import type { VehicleProps } from "@/interfaces/VehicleProps";
+
 
 function Home() {
   const [vehicles, setVehicles] = useState<VehicleProps[]>([]);

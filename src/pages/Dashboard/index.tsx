@@ -19,7 +19,7 @@ import { collection, query, getDocs, where, doc, deleteDoc } from "firebase/fire
 import { ref, deleteObject } from "firebase/storage";
 import { storage } from "@/services/firebaseConnection";
 
-import type { VehicleProps } from "../Home";
+import type { VehicleProps } from "@/interfaces/VehicleProps";
 
 import { AuthContext } from "@/contexts/AuthContext/context";
 
