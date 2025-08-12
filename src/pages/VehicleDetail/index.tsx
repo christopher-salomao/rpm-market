@@ -5,8 +5,8 @@ import { getDoc, doc } from "firebase/firestore";
 import { db } from "@/services/firebaseConnection";
 
 import { Spinner } from "@/components/Spinner";
-import { Container } from "@/components/Container";
 import { FaWhatsapp } from "react-icons/fa";
+import { Swiper, SwiperSlide } from "swiper/react"
 
 import type { VehicleProps } from "@/interfaces/VehicleProps";
 
@@ -53,8 +53,28 @@ function VehicleDetail() {
   }
 
   return (
-    <Container>
-      <h1>Slider</h1>
+    <div className="w-full max-w-7xl mx-auto px-4">
+      <Swiper
+        slidesPerView={1}
+        breakpoints={{
+          768: {
+            slidesPerView: 2,
+          },
+        }}
+        pagination={{ clickable: true }}
+        navigation
+        className="rounded-lg"
+      >
+        {vehicle?.images.map((image) => (
+          <SwiperSlide key={image.name}>
+            <img
+              className="w-full h-96 object-cover select-none"
+              src={image.url}
+              alt={vehicle?.name}
+            />
+          </SwiperSlide>
+        ))}
+      </Swiper>
 
       {vehicle && (
         <main className="w-full bg-white rounded p-6 my-4">
@@ -96,14 +116,14 @@ function VehicleDetail() {
 
           <a
             href=""
-            className="w-full flex items-center justify-center px-4 py-2 text-white text-xl font-medium border gap-2 mt-4 bg-green-600 rounded-md drop-shadow"
+            className="w-full flex items-center justify-center px-4 py-2 text-white text-xl font-medium border gap-2 mt-4 bg-green-600 rounded-lg drop-shadow"
           >
             Conversar com o vendedor
             <FaWhatsapp size={24} />
           </a>
         </main>
       )}
-    </Container>
+    </div>
   );
 }
 
