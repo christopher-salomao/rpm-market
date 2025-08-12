@@ -1,10 +1,60 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
+import { Link } from "react-router-dom";
 import { Container } from "../../components/Container";
 import { FaSearch } from "react-icons/fa";
+import { Spinner } from "@/components/Spinner";
+
+import { db } from "@/services/firebaseConnection";
+import { collection, query, getDocs, orderBy } from "firebase/firestore";
+
+import type { VehicleProps } from "@/interfaces/VehicleProps";
+
 
 function Home() {
-  const [searchInput, setSearchInput] = useState("");
+  const [vehicles, setVehicles] = useState<VehicleProps[]>([]);
+  const [loadedImages, setLoadedImages] = useState<string[]>([]);
+
+  useEffect(() => {
+    function loadVehicles() {
+      const vehiclesRef = collection(db, "vehicles");
+      const queryRef = query(vehiclesRef, orderBy("creationDate", "desc"));
+
+      getDocs(queryRef)
+        .then((snapshot) => {
+          const vehiclesList: VehicleProps[] = [];
+
+          snapshot.forEach((doc) => {
+            vehiclesList.push({
+              id: doc.id,
+              name: doc.data().name,
+              model: doc.data().model,
+              year: doc.data().year,
+              km: doc.data().km,
+              whatsapp: doc.data().whatsapp,
+              city: doc.data().city,
+              price: doc.data().price,
+              description: doc.data().description,
+              creationDate: doc.data().creationDate,
+              owner: doc.data().owner,
+              uid: doc.data().uid,
+              images: doc.data().images,
+            });
+          });
+
+          setVehicles(vehiclesList);
+        })
+        .catch((error) => {
+          console.log("Erro ao carregar veículos", error);
+        });
+    }
+
+    loadVehicles();
+  }, []);
+
+  function handleImageLoad(id: string) {
+    setLoadedImages((prevImageLoaded) => [...prevImageLoaded, id]);
+  }
 
   return (
     <Container>
@@ -12,8 +62,6 @@ function Home() {
         <input
           type="text"
           placeholder="Digite o modelo do veículo..."
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
           className="grow border border-zinc-500 px-2 h-9 rounded-sm outline-none"
         />
         <button
@@ -29,25 +77,41 @@ function Home() {
       </h1>
 
       <main className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <section className="w-full bg-white px-2 py-4 rounded-lg hover:scale-101 transition-all duration-300">
-          <img
-            src="https://image.webmotors.com.br/_fotos/anunciousados/gigante/2025/202503/20250324/jaguar-fpace-2-0-16v-turbo-diesel-prestige-awd-4p-automatico-wmimagem19432660035.webp?s=fill&w=552&h=414&q=60"
-            alt="Veículo"
-            className="w-full max-h-72 object-contain rounded mb-2"
-          />
-          <p className="font-bold mt-1 mb-2">
-            Jaguar F-Pace 2.0 16v Turbo Diesel
-          </p>
-          <div className="flex flex-col border-b-2 border-zinc-300">
-            <span className="text-zinc-700 mb-6">Ano 2018/2018 • 49.500km</span>
-            <strong className="text-red-600 text-xl mb-2">R$ 179.900</strong>
-          </div>
-          <div className="mt-2">
-            <span className="text-zinc-700">Belo Horizonte - MG</span>
-          </div>
-        </section>
+        {vehicles.map((vehicle) => (
+          <Link key={vehicle.id} to={`/veiculo/${vehicle.id}`}>
+            <section className="w-full bg-white px-2 py-4 rounded-lg hover:scale-101 transition-all duration-300">
+              <div className="w-full h-72 aspect-[4/3] bg-gray-200 rounded"
+                style={{ display: loadedImages.includes(vehicle.id) ? "none" : "block" }}>
+                  <Spinner />
+                </div>
 
-
+              <img
+                src={vehicle.images[0].url}
+                alt={vehicle.name}
+                className="w-full max-h-72 aspect-[4/3] object-contain rounded mb-2"
+                onLoad={() => handleImageLoad(vehicle.id)}
+                style={{ display: loadedImages.includes(vehicle.id) ? "block" : "none" }}
+              />
+              <p className="font-bold mt-1 mb-2">{vehicle.name}</p>
+              <div className="flex flex-col border-b-2 border-zinc-300">
+                <span className="text-zinc-700 mb-6">
+                  Ano {vehicle.year} • {vehicle.km} km
+                </span>
+                <strong className="text-red-600 text-xl mb-2">
+                  {Number(vehicle.price).toLocaleString("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  })}
+                </strong>
+              </div>
+              <div className="mt-2">
+                <span className="text-zinc-700">
+                  {vehicle.city}
+                </span>
+              </div>
+            </section>
+          </Link>
+        ))}
       </main>
     </Container>
   );

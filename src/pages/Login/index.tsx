@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Input from "../../components/Input";
 
@@ -13,8 +13,10 @@ import { auth } from "../../services/firebaseConnection";
 
 import toast from "react-hot-toast";
 import { toastStyle } from "../../styles/toastStyle";
+import { FaEye, FaEyeSlash } from "react-icons/fa6";
 
 function Login() {
+  const [showPassword, setShowPassword] = useState(false);
   const {
     register,
     handleSubmit,
@@ -71,14 +73,38 @@ function Login() {
           register={register}
         />
 
-        <Input
-          type="password"
-          placeholder="Digite a sua senha"
-          name="password"
-          label="Senha"
-          error={errors.password?.message}
-          register={register}
-        />
+        <div className="w-full">
+          <div className="relative mb-1 w-full">
+            <label
+              htmlFor="password"
+              className="absolute -top-3.5 left-2 bg-white px-1.5 z-10 font-bold text-md text-zinc-800 cursor-text"
+            >
+              Senha
+            </label>
+            <input
+              className={`border ${
+                errors.password ? "border-red-600" : "border-zinc-500"
+              } px-2 h-10 rounded-sm outline-none w-full pr-10`}
+              type={showPassword ? "text" : "password"}
+              placeholder="Digite a sua senha"
+              {...register("password")}
+              id="password"
+            />
+
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-6 top-1/2 -translate-y-1/2 text-xl  text-zinc-600 hover:text-black cursor-pointer"
+            >
+              {showPassword ? <FaEye /> : <FaEyeSlash />}
+            </button>
+          </div>
+          {errors.password && (
+            <p className="text-red-600 text-sm mt-1">
+              {errors.password.message}
+            </p>
+          )}
+        </div>
 
         <button
           type="submit"
