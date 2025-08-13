@@ -94,12 +94,12 @@ function NewVehicle() {
         );
 
         await addDoc(collection(db, "vehicles"), {
-          name: data.name,
-          model: data.model,
+          name: data.name.toUpperCase(),
+          model: data.model.toUpperCase(),
           year: data.year,
           km: data.km,
           whatsapp: data.whatsapp,
-          city: data.city,
+          city: data.city.toUpperCase(),
           price: data.price,
           description: data.description,
           creationDate: new Date(),
