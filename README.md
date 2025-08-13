@@ -22,9 +22,30 @@ Além das funcionalidades originais, o projeto recebeu algumas melhorias visuais
 ## 📸 Preview
 
 ![Página Inicial](./preview/img1.png)
+![Página Dashboard](./preview/img2.png)
+![Página de cadastro de veículos](./preview/img3.png)
+![Página de detalhes do veículo](./preview/img4.png)
 
 ## 🚀 Como executar
 
 1. **Clone o repositório:**
    ```bash
    git clone https://github.com/christopher-salomao/rpm-market.git
+   ```
+2. **Acesse a pasta do projeto:**
+   ```bash
+   cd rpm-market
+   ```
+3. **Instale as dependências:**
+   ```bash
+   npm install
+   ```
+4. **Modifique o arquivo `firebaseConnection.ts` com suas credenciais do Firebase**
+5. **Inicie o servidor de desenvolvimento:**
+   ```bash
+   npm run dev
+   ```
+6. **Abra o navegador e acesse:**
+   ```
+   http://localhost:5173
+   ```
