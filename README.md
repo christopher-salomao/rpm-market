@@ -10,6 +10,10 @@ Além das funcionalidades originais, o projeto recebeu algumas melhorias visuais
 - **[TypeScript](https://www.typescriptlang.org/)** – Tipagem estática para mais segurança no código
 - **[Firebase](https://firebase.google.com/)** – Autenticação e banco de dados em tempo real
 - **[Tailwind CSS](https://tailwindcss.com/)** – Estilização rápida e responsiva
+- **[React Hook Form](https://react-hook-form.com/)** – Gerenciamento de formulários e validações de forma simples e eficiente
+- **[Zod](https://zod.dev/)** – Validação de esquemas e tipagem segura
+- **[React Router](https://reactrouter.com/)** – Navegação entre páginas da aplicação
+- **[React Icons](https://react-icons.github.io/react-icons/)** – Ícones prontos para usar na interface
 - **[shadcn/ui](https://ui.shadcn.com/)** – Componentes acessíveis e estilizados
 
 ## ✨ Diferenças em relação ao projeto original
